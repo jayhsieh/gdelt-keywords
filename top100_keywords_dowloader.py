@@ -56,7 +56,7 @@ def save(table_name, _df):
 
 def main():
     theme_query = 'query=sourcecountry:india&output=wordcloudcsv'
-    df = get_csv(url + theme_query).tail(5)
+    df = get_csv(url + theme_query)
     themes = df['Theme']
     related_words_df = pd.DataFrame()
     newsdf = pd.DataFrame()
