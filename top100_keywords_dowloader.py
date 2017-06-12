@@ -56,7 +56,7 @@ def save(table_name, _df):
 
 def main(country):
     theme_query = 'query=sourcecountry:{}&output=wordcloudcsv'.format(country)
-    df = get_csv(url + theme_query).head(1)
+    df = get_csv(url + theme_query)
     if df.empty:
         print('\n\n\n********** ERROR! [ {} ] No Content!! **********\n\n'.format(country))
         return
