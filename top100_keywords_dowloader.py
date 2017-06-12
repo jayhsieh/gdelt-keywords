@@ -80,7 +80,7 @@ def main(country):
 if __name__ == '__main__':
     dir_name = datetime.strftime(datetime.now(), '%Y%m%d') + '/'
     url = 'http://api.gdeltproject.org/api/v1/search_ftxtsearch/search_ftxtsearch?'
-    directory = '/Users/Urien/Desktop/Taitra/GDELT/gdelt-keywords/data/' + dir_name
+    directory = './data/' + dir_name
 
     if not os.path.exists(directory):
         os.makedirs(directory)
