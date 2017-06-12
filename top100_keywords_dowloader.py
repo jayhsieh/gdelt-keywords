@@ -22,8 +22,8 @@ def get_csv(query):
     _df['CollectDate'] = datetime.now()
     return _df
 
-def get_theme_news(theme):
-    query = '{0}query={1}%20sourcecountry:india&output=artlist&dropdup=true'.format(url, theme)
+def get_theme_news(theme, country):
+    query = '{0}query={1}%20sourcecountry:{2}&output=artlist&dropdup=true'.format(url, theme, country)
 
     res = requests.get(query)
     time.sleep(1)
@@ -54,8 +54,9 @@ def save(table_name, _df):
     print('Save [ ' + timenow + table_name + ' ] to >>> ' + directory)
 
 
-def main():
-    theme_query = 'query=sourcecountry:india&output=wordcloudcsv'
+def main(country):
+    
+    theme_query = 'query=sourcecountry:{}&output=wordcloudcsv'.format(country)
     df = get_csv(url + theme_query)
     themes = df['Theme']
     related_words_df = pd.DataFrame()
@@ -65,11 +66,11 @@ def main():
     for rank, theme in enumerate(themes):
         print('[{0}] >>> {1}'.format(str(rank).zfill(2), theme))
         
-        _df = get_csv('{0}query={1}%20sourcecountry:india&output=wordcloudcsv'.format(url, theme))
+        _df = get_csv('{0}query={1}%20sourcecountry:{2}&output=wordcloudcsv'.format(url, theme, country))
         # _df = get_csv(url + 'query=' + theme + '%20sourcecountry:india&output=wordcloudcsv')
         _df['From'] = theme
         related_words_df = related_words_df.append(_df, ignore_index=True)
-        newsdf = newsdf.append(pd.merge(get_theme_news(theme), df, on='Theme'))
+        newsdf = newsdf.append(pd.merge(get_theme_news(theme,country), df, on='Theme'))
     save('IndiaTheme', newsdf)
     save('RelatedWord', related_words_df)
 
@@ -81,5 +82,6 @@ if __name__ == '__main__':
 
     if not os.path.exists(directory):
         os.makedirs(directory)
-
-    main()
+    country_list = country_list = ['indonesia','malaysia','philippines','singapore','thailand','brunei','laos','myanmar','cambodia','vietnam','india','germany','unitedstates','japan']
+    for country in country_list:
+        main(country)
