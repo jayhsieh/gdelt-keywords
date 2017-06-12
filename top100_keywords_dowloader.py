@@ -55,13 +55,15 @@ def save(table_name, _df):
 
 
 def main(country):
-    
     theme_query = 'query=sourcecountry:{}&output=wordcloudcsv'.format(country)
-    df = get_csv(url + theme_query)
+    df = get_csv(url + theme_query).head(1)
+    if df.empty:
+        print('\n\n\n********** ERROR! [ {} ] No Content!! **********\n\n'.format(country))
+        return
     themes = df['Theme']
     related_words_df = pd.DataFrame()
     newsdf = pd.DataFrame()
-    print('\n********** MISSION DATE : ' + str(datetime.now().date()) + ' **********')
+    print('\n********** MISSION :[ '+ country +' ] DATE : [ ' + str(datetime.now().date()) + ' ] **********')
 
     for rank, theme in enumerate(themes):
         print('[{0}] >>> {1}'.format(str(rank).zfill(2), theme))
@@ -71,14 +73,14 @@ def main(country):
         _df['From'] = theme
         related_words_df = related_words_df.append(_df, ignore_index=True)
         newsdf = newsdf.append(pd.merge(get_theme_news(theme,country), df, on='Theme'))
-    save('IndiaTheme', newsdf)
-    save('RelatedWord', related_words_df)
+    save('{}_Theme'.format(country), newsdf)
+    save('{}_RelatedWord'.format(country), related_words_df)
 
 
 if __name__ == '__main__':
     dir_name = datetime.strftime(datetime.now(), '%Y%m%d') + '/'
     url = 'http://api.gdeltproject.org/api/v1/search_ftxtsearch/search_ftxtsearch?'
-    directory = './data/' + dir_name
+    directory = '/Users/Urien/Desktop/Taitra/GDELT/gdelt-keywords/data/' + dir_name
 
     if not os.path.exists(directory):
         os.makedirs(directory)
